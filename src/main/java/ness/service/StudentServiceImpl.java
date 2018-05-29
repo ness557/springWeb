@@ -1,24 +1,21 @@
 package ness.service;
 
 import ness.model.Student;
-import ness.model.Student;
 import org.apache.commons.lang3.text.StrSubstitutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.annotation.Resource;
+import java.util.*;
 import java.util.logging.Logger;
 
 @Service
 public class StudentServiceImpl implements StudentService {
 
-    @Value("${rest.hosturl}")
-    private static String restHostUrl;
+    @Resource(name = "myProperties")
+    private Properties properties;
 
     private static final String getStudent = "${host}/students?id=${id}";
     private static final String getStudents = "${host}/students";
@@ -41,7 +38,7 @@ public class StudentServiceImpl implements StudentService {
         logger.info("Executing PUT method to add Student " + Student);
 
         Map valuesMap = new HashMap();
-        valuesMap.put("host", restHostUrl);
+        valuesMap.put("host", properties.getProperty("rest.hosturl"));
 
         StrSubstitutor sub = new StrSubstitutor(valuesMap);
         String req = sub.replace(addStudent);
@@ -54,7 +51,7 @@ public class StudentServiceImpl implements StudentService {
         logger.info("Executing POST method to update Student " + Student);
 
         Map valuesMap = new HashMap();
-        valuesMap.put("host", restHostUrl);
+        valuesMap.put("host", properties.getProperty("rest.hosturl"));
 
         StrSubstitutor sub = new StrSubstitutor(valuesMap);
         String req = sub.replace(editStudent);
@@ -68,7 +65,7 @@ public class StudentServiceImpl implements StudentService {
         logger.info("Executing DELETE method to delete Student " + Student);
 
         Map valuesMap = new HashMap();
-        valuesMap.put("host", restHostUrl);
+        valuesMap.put("host", properties.getProperty("rest.hosturl"));
         valuesMap.put("id", Student.getId());
 
         StrSubstitutor sub = new StrSubstitutor(valuesMap);
@@ -82,7 +79,7 @@ public class StudentServiceImpl implements StudentService {
         logger.info("Executing DELETE method to delete Student by id = " + id);
 
         Map valuesMap = new HashMap();
-        valuesMap.put("host", restHostUrl);
+        valuesMap.put("host", properties.getProperty("rest.hosturl"));
         valuesMap.put("id", id);
 
         StrSubstitutor sub = new StrSubstitutor(valuesMap);
@@ -95,7 +92,7 @@ public class StudentServiceImpl implements StudentService {
     public Student getStudentById(int id) {
         Map valuesMap = new HashMap();
 
-        valuesMap.put("host", restHostUrl);
+        valuesMap.put("host", properties.getProperty("rest.hosturl"));
         valuesMap.put("id", id);
 
         StrSubstitutor sub = new StrSubstitutor(valuesMap);
@@ -108,7 +105,7 @@ public class StudentServiceImpl implements StudentService {
     public List<Student> getStudents() {
         Map valuesMap = new HashMap();
 
-        valuesMap.put("host", restHostUrl);
+        valuesMap.put("host", properties.getProperty("rest.hosturl"));
 
         StrSubstitutor sub = new StrSubstitutor(valuesMap);
         String req = sub.replace(getStudents);

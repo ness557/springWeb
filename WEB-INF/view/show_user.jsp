@@ -19,8 +19,8 @@
 
 <table>
     <tr>
-        <th>First name</th>
-        <th>Last name</th>
+        <th>Username</th>
+        <th>Password</th>
         <th>Email</th>
         <th>Phone</th>
         <th>Roles</th>
@@ -40,8 +40,8 @@
         </c:url>
 
         <tr>
-            <td>${user.firstName}</td>
-            <td>${user.lastName}</td>
+            <td>${user.username}</td>
+            <td>${user.password}</td>
             <td>${user.userInfo.email}</td>
             <td>${user.userInfo.phone}</td>
             <td>${user.rolesString}</td>

@@ -4,9 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @XmlRootElement
 public class User implements Serializable {
@@ -19,7 +17,6 @@ public class User implements Serializable {
 
     private UserInfo userInfo;
 
-    @JsonBackReference
     private Set<Role> roles = new HashSet<>();
 
     public User() {
@@ -107,5 +104,16 @@ public class User implements Serializable {
                 ", userInfo=" + userInfo +
                 ", roles=" + roles +
                 '}';
+    }
+
+    public Map<String, String> toMap(){
+
+        Map<String, String> map = new HashMap<>();
+
+        map.put("username", this.username);
+        map.put("password", this.password);
+        map.put("roles", getRolesString());
+
+        return map;
     }
 }

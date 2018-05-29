@@ -24,7 +24,16 @@
 
     <bean id="jacksonObjectMapper" class="ness.model.MyJsonMapper"/>
 
-    <context:property-placeholder location="WEB-INF/application.properties"/>
+    <!--<context:property-placeholder location="/WEB-INF/application.properties"/>-->
+
+    <bean id="myProperties"
+          class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="locations">
+            <list>
+                <value>WEB-INF/application.properties</value>
+            </list>
+        </property>
+    </bean>
 
     <!-- Define Spring MVC view resolver -->
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">

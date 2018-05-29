@@ -20,13 +20,13 @@ import java.util.Set;
 
 @Controller
 @RequestMapping("/users")
-public class WebController {
+public class UserWebController {
 
     private UserService userService;
     private RoleService roleService;
 
     @Autowired
-    public WebController(UserService userService, RoleService roleService) {
+    public UserWebController(UserService userService, RoleService roleService) {
         this.userService = userService;
         this.roleService = roleService;
     }

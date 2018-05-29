@@ -1,10 +1,12 @@
 package ness.model;
 
 
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class Student implements Serializable {
+@XmlRootElement
+public class Student {
 
     private int id;
 

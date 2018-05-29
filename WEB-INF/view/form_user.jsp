@@ -24,16 +24,16 @@
         <input type="hidden" name="${status.expression}" value="${status.value}"/>
     </tags:bind>
 
-    <tags:bind path="user.firstName">
-        <p>first name</p><input type="text" name="${status.expression}" value="${status.value}"/>
+    <tags:bind path="user.username">
+        <p>Username <input type="text" name="${status.expression}" value="${status.value}"/></p>
     </tags:bind>
 
-    <tags:bind path="user.lastName">
-        <p>last name<input type="text" name="${status.expression}" value="${status.value}"/></p>
+    <tags:bind path="user.password">
+        <p>Password <input type="text" name="${status.expression}" value="${status.value}"/></p>
     </tags:bind>
 
     <tags:bind path="user.userInfo.email">
-        <p>Email </p><input type="text" name="${status.expression}" value="${status.value}"/>
+        <p>Email <input type="text" name="${status.expression}" value="${status.value}"/></p>
     </tags:bind>
 
     <tags:bind path="user.userInfo.id">
@@ -41,11 +41,11 @@
     </tags:bind>
 
     <tags:bind path="user.userInfo.phone">
-        <p>Phone </p><input type="number" name="${status.expression}" value="${status.value}"/>
+        <p>Phone <input type="number" name="${status.expression}" value="${status.value}"/></p>
     </tags:bind>
 
     <tags:bind path="user.rolesString">
-        <p>Phone </p><input type="text" name="${status.expression}" value="${status.value}"/>
+        <p>Roles <input type="text" name="${status.expression}" value="${status.value}"/></p>
     </tags:bind>
 
     <br>

@@ -2,19 +2,19 @@ package ness.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-public class Role implements Serializable {
+public class Role{
 
     private int id;
 
     private String name;
 
-    @JsonManagedReference
     private Set<User> users = new HashSet<>();
 
     public Role() {
@@ -36,7 +36,6 @@ public class Role implements Serializable {
         this.name = name;
     }
 
-    @XmlTransient
     public Set<User> getUsers() {
         return users;
     }

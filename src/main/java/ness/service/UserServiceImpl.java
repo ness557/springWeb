@@ -7,19 +7,18 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.annotation.Resource;
+import java.util.*;
 import java.util.logging.Logger;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Value("${rest.hosturl}")
-    private static String restHostUrl;
+    @Resource(name = "myProperties")
+    private Properties properties;
 
     private static final String getUser = "${host}/users?id=${id}";
+    private static final String getUserByUsername = "${host}/users?username=${username}";
     private static final String getUsers = "${host}/users";
     private static final String addUser = "${host}/users";
     private static final String editUser = "${host}/users";
@@ -40,7 +39,7 @@ public class UserServiceImpl implements UserService {
         logger.info("Executing PUT method to add user " + user);
 
         Map valuesMap = new HashMap();
-        valuesMap.put("host", restHostUrl);
+        valuesMap.put("host", properties.getProperty("rest.hosturl"));
 
         StrSubstitutor sub = new StrSubstitutor(valuesMap);
         String req = sub.replace(addUser);
@@ -53,7 +52,7 @@ public class UserServiceImpl implements UserService {
         logger.info("Executing POST method to update user " + user);
 
         Map valuesMap = new HashMap();
-        valuesMap.put("host", restHostUrl);
+        valuesMap.put("host", properties.getProperty("rest.hosturl"));
 
         StrSubstitutor sub = new StrSubstitutor(valuesMap);
         String req = sub.replace(editUser);
@@ -67,7 +66,7 @@ public class UserServiceImpl implements UserService {
         logger.info("Executing DELETE method to delete user " + user);
 
         Map valuesMap = new HashMap();
-        valuesMap.put("host", restHostUrl);
+        valuesMap.put("host", properties.getProperty("rest.hosturl"));
         valuesMap.put("id", user.getId());
 
         StrSubstitutor sub = new StrSubstitutor(valuesMap);
@@ -81,7 +80,7 @@ public class UserServiceImpl implements UserService {
         logger.info("Executing method save or update to user " + user);
 
         Map valuesMap = new HashMap();
-        valuesMap.put("host", restHostUrl);
+        valuesMap.put("host", properties.getProperty("rest.hosturl"));
 
         StrSubstitutor sub = new StrSubstitutor(valuesMap);
 
@@ -95,13 +94,12 @@ public class UserServiceImpl implements UserService {
 
     }
 
-
     @Override
     public void removeUser(int id) {
         logger.info("Executing DELETE method to delete user by id = " + id);
 
         Map valuesMap = new HashMap();
-        valuesMap.put("host", restHostUrl);
+        valuesMap.put("host", properties.getProperty("rest.hosturl"));
         valuesMap.put("id", id);
 
         StrSubstitutor sub = new StrSubstitutor(valuesMap);
@@ -114,7 +112,7 @@ public class UserServiceImpl implements UserService {
     public User getUserById(int id) {
         Map valuesMap = new HashMap();
 
-        valuesMap.put("host", restHostUrl);
+        valuesMap.put("host", properties.getProperty("rest.hosturl"));
         valuesMap.put("id", id);
 
         StrSubstitutor sub = new StrSubstitutor(valuesMap);
@@ -124,11 +122,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getUserByUsername(String username) {
+        Map valuesMap = new HashMap();
+
+        valuesMap.put("host", properties.getProperty("rest.hosturl"));
+        valuesMap.put("username", username);
+
+        StrSubstitutor sub = new StrSubstitutor(valuesMap);
+        String req = sub.replace(getUserByUsername);
+
+        return restTemplate.getForObject(req, User.class);
+    }
+
+    @Override
     public List<User> getUserList() {
         Map valuesMap = new HashMap();
 
-        System.out.println(restHostUrl);
-        valuesMap.put("host", restHostUrl);
+        System.out.println(properties.getProperty("rest.hosturl"));
+        valuesMap.put("host", properties.getProperty("rest.hosturl"));
 
         valuesMap.get("host");
         StrSubstitutor sub = new StrSubstitutor(valuesMap);

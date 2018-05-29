@@ -1,5 +1,8 @@
 package ness.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import ness.model.Role;
 import org.apache.commons.lang3.text.StrSubstitutor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,17 +10,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.annotation.Resource;
+import java.io.IOException;
+import java.util.*;
 import java.util.logging.Logger;
 
 @Service
 public class RoleServiceImpl implements RoleService {
 
-    @Value("${rest.hosturl}")
-    private static String restHostUrl;
+    @Resource(name = "myProperties")
+    private Properties properties;
 
     private static final String getRole = "${host}/roles?id=${id}";
     private static final String getRoles = "${host}/roles";
@@ -39,7 +41,7 @@ public class RoleServiceImpl implements RoleService {
         logger.info("Executing PUT method to add role " + role);
 
         Map valuesMap = new HashMap();
-        valuesMap.put("host", restHostUrl);
+        valuesMap.put("host", properties.getProperty("rest.hosturl"));
 
         StrSubstitutor sub = new StrSubstitutor(valuesMap);
         String req = sub.replace(addRole);
@@ -52,7 +54,7 @@ public class RoleServiceImpl implements RoleService {
         logger.info("Executing POST method to update role " + role);
 
         Map valuesMap = new HashMap();
-        valuesMap.put("host", restHostUrl);
+        valuesMap.put("host", properties.getProperty("rest.hosturl"));
 
         StrSubstitutor sub = new StrSubstitutor(valuesMap);
         String req = sub.replace(editRole);
@@ -65,7 +67,7 @@ public class RoleServiceImpl implements RoleService {
         logger.info("Executing DELETE method to delete role " + role);
 
         Map valuesMap = new HashMap();
-        valuesMap.put("host", restHostUrl);
+        valuesMap.put("host", properties.getProperty("rest.hosturl"));
         valuesMap.put("id", role.getId());
 
         StrSubstitutor sub = new StrSubstitutor(valuesMap);
@@ -79,7 +81,7 @@ public class RoleServiceImpl implements RoleService {
         logger.info("Executing DELETE method to delete role by id = " + id);
 
         Map valuesMap = new HashMap();
-        valuesMap.put("host", restHostUrl);
+        valuesMap.put("host", properties.getProperty("rest.hosturl"));
         valuesMap.put("id", id);
 
         StrSubstitutor sub = new StrSubstitutor(valuesMap);
@@ -92,7 +94,7 @@ public class RoleServiceImpl implements RoleService {
     public Role getRoleById(int id) {
         Map valuesMap = new HashMap();
 
-        valuesMap.put("host", restHostUrl);
+        valuesMap.put("host", properties.getProperty("rest.hosturl"));
         valuesMap.put("id", id);
 
         StrSubstitutor sub = new StrSubstitutor(valuesMap);
@@ -105,12 +107,24 @@ public class RoleServiceImpl implements RoleService {
     public List<Role> getRoles() {
         Map valuesMap = new HashMap();
 
-        valuesMap.put("host", restHostUrl);
+        valuesMap.put("host", properties.getProperty("rest.hosturl"));
 
         StrSubstitutor sub = new StrSubstitutor(valuesMap);
         String req = sub.replace(getRoles);
+        ObjectMapper mapper = new ObjectMapper();
 
-        return restTemplate.getForObject(req, ArrayList.class);
+        JsonNode roles = restTemplate.getForObject(req, JsonNode.class);
+
+        List<Role> list = null;
+        try {
+            list = mapper.readValue(
+                    mapper.treeAsTokens(roles), new TypeReference<List<Role>>() {}
+            );
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return list;
     }
 
     @Override
@@ -118,6 +132,8 @@ public class RoleServiceImpl implements RoleService {
         logger.info("Trying to find role by name = " + name);
 
         List<Role> roles = getRoles();
+        logger.warning("\n\n\n\n");
+
 
         for (Role role : roles) {
             if (role.getName().equals(name)) {
