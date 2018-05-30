@@ -1,12 +1,14 @@
 package ness.security;
 
 import org.apache.commons.lang3.text.StrSubstitutor;
+import org.json.simple.JSONObject;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
 import javax.security.sasl.AuthenticationException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -24,6 +26,10 @@ public class TokenServiceImpl implements TokenService {
     private RestTemplate restTemplate;
     private Logger logger = Logger.getLogger(getClass().getName());
 
+    public TokenServiceImpl() {
+        restTemplate = new RestTemplate();
+    }
+
     @Override
     public String getToken(String username, String password) throws AuthenticationException {
         logger.info("Trying to get token by username = "
@@ -39,7 +45,7 @@ public class TokenServiceImpl implements TokenService {
         String req = sub.replace(getToken);
 
         String token = restTemplate.getForObject(req, String.class);
-        if(token != null)
+        if (token != null)
             logger.info("Got token");
         else
             logger.info("Error");
@@ -59,12 +65,20 @@ public class TokenServiceImpl implements TokenService {
         StrSubstitutor sub = new StrSubstitutor(valuesMap);
         String req = sub.replace(getUser);
 
-        User user = restTemplate.getForObject(req, User.class);
-        if(user != null)
+        JSONObject jsonUser = restTemplate.getForObject(req, JSONObject.class);
+
+        if (jsonUser != null) {
+
+            User user = new User((String) jsonUser.get("username"),
+                    (String) jsonUser.get("password"),
+                    true, true, true, true,
+                    new ArrayList<>());
+
             logger.info("Got user = " + user.toString());
-        else
+            return user;
+        } else
             logger.info("Error");
 
-        return user;
+        return null;
     }
 }

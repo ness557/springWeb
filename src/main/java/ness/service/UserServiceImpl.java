@@ -28,7 +28,6 @@ public class UserServiceImpl implements UserService {
 
     private Logger logger = Logger.getLogger(getClass().getName());
 
-
     @Autowired
     public UserServiceImpl() {
         this.restTemplate = new RestTemplate();
@@ -123,6 +122,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserByUsername(String username) {
+        logger.info("Trying to get user by username = " + username);
         Map valuesMap = new HashMap();
 
         valuesMap.put("host", properties.getProperty("rest.hosturl"));
@@ -131,21 +131,22 @@ public class UserServiceImpl implements UserService {
         StrSubstitutor sub = new StrSubstitutor(valuesMap);
         String req = sub.replace(getUserByUsername);
 
-        return restTemplate.getForObject(req, User.class);
+        User user =  restTemplate.getForObject(req, User.class);
+        logger.info("Got user: " + user);;
+        return user;
     }
 
     @Override
     public List<User> getUserList() {
         Map valuesMap = new HashMap();
 
-        System.out.println(properties.getProperty("rest.hosturl"));
         valuesMap.put("host", properties.getProperty("rest.hosturl"));
 
         valuesMap.get("host");
         StrSubstitutor sub = new StrSubstitutor(valuesMap);
         String req = sub.replace(getUsers);
 
-        System.out.println(req);
+        logger.info(req);
 
         return restTemplate.getForObject(req, ArrayList.class);
     }

@@ -77,7 +77,6 @@ public class UserWebController {
     public String saveUser(@ModelAttribute("user") User user, BindingResult result1,
                            @ModelAttribute("rolesString") String roles, BindingResult result2) {
 
-        System.out.println(result1 + "\n" + result2);
         Set<Role> roleSet = new HashSet<>();
 
         for (String roleName: roles.split(",")) {

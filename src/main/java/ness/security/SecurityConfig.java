@@ -2,6 +2,7 @@ package ness.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -18,16 +19,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.authorizeRequests()
-                .antMatchers("/users/**").hasRole("ADMIN")
-                .antMatchers("/students/**").hasRole("USER")
-                .antMatchers("/login").permitAll()
-                .and().formLogin().loginPage("/login").defaultSuccessUrl("/users")
-                .permitAll()
+        http
+                .addFilterBefore(authenticationFilter, BasicAuthenticationFilter.class)
+                .authorizeRequests()
+                    .antMatchers("/users/**").hasRole("ADMIN")
+                    .antMatchers("/students/**").hasRole("USER")
+                    .antMatchers("/login").permitAll()
 
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and().csrf().disable()
-                .addFilterBefore(authenticationFilter, BasicAuthenticationFilter.class);
+                .and().csrf().disable();
+
     }
 }

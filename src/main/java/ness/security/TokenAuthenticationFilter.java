@@ -19,6 +19,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.Properties;
 
 @Component
@@ -40,12 +41,11 @@ public class TokenAuthenticationFilter extends GenericFilterBean {
                          ServletResponse servletResponse,
                          FilterChain filterChain) throws IOException, ServletException {
 
-        System.out.println("\n\n\n\n\n\n TokenAuthenticationFilter doFilter\n\n\n\n\n\n\n");
-
-
         final HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
 
         final String accessToken = httpRequest.getHeader(properties.getProperty("security.header.name"));
+
+        logger.info("\n\nAccessToken: " + accessToken);
 
         if (accessToken != null) {
             User userFromToken = tokenService.getUser(accessToken);
@@ -53,6 +53,8 @@ public class TokenAuthenticationFilter extends GenericFilterBean {
 
                 ((HttpServletResponse) servletResponse).sendError(HttpServletResponse.SC_BAD_REQUEST,
                         "Error while parsing token");
+                logger.info("\n\n\n TokenAuthenticationFilter userFromToken == null\n\n\n");
+
                 return;
             }
 
@@ -61,13 +63,15 @@ public class TokenAuthenticationFilter extends GenericFilterBean {
 
                 ((HttpServletResponse) servletResponse).sendError(HttpServletResponse.SC_UNAUTHORIZED,
                         "User with username from token not found");
+                logger.info("\n\n\n TokenAuthenticationFilter userFromDB == null\n\n\n");
                 return;
             }
 
-            if(!userFromDB.getPassword().equals(userFromToken.getPassword())){
+            if (!userFromDB.getPassword().equals(userFromToken.getPassword())) {
 
                 ((HttpServletResponse) servletResponse).sendError(HttpServletResponse.SC_UNAUTHORIZED,
                         "Bad credentials in token");
+                logger.info("\n\n\n TokenAuthenticationFilter Bad credentials in token\n\n\n");
                 return;
             }
 
