@@ -22,7 +22,7 @@
         </mvc:message-converters>
     </mvc:annotation-driven>
 
-    <bean id="jacksonObjectMapper" class="ness.model.MyJsonMapper"/>
+    <bean id="jacksonObjectMapper" class="ness.web.model.MyJsonMapper"/>
 
     <!--<context:property-placeholder location="/WEB-INF/application.properties"/>-->
 

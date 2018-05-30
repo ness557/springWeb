@@ -1,6 +1,6 @@
-package ness.service;
+package ness.web.service;
 
-import ness.model.User;
+import ness.web.model.User;
 
 import java.util.List;
 

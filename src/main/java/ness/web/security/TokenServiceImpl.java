@@ -1,7 +1,9 @@
-package ness.security;
+package ness.web.security;
 
 import org.apache.commons.lang3.text.StrSubstitutor;
 import org.json.simple.JSONObject;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -44,13 +46,16 @@ public class TokenServiceImpl implements TokenService {
         StrSubstitutor sub = new StrSubstitutor(valuesMap);
         String req = sub.replace(getToken);
 
-        String token = restTemplate.getForObject(req, String.class);
-        if (token != null)
+        ResponseEntity responseEntity= restTemplate.getForEntity(req, String.class);
+
+        if (responseEntity.getStatusCode().equals(HttpStatus.OK)){
             logger.info("Got token");
+            return (String) responseEntity.getBody();
+        }
         else
             logger.info("Error");
 
-        return token;
+        return null;
     }
 
     @Override
@@ -65,9 +70,11 @@ public class TokenServiceImpl implements TokenService {
         StrSubstitutor sub = new StrSubstitutor(valuesMap);
         String req = sub.replace(getUser);
 
-        JSONObject jsonUser = restTemplate.getForObject(req, JSONObject.class);
+        ResponseEntity responseEntity = restTemplate.getForEntity(req, JSONObject.class);
 
-        if (jsonUser != null) {
+        if (responseEntity.getStatusCode().equals(HttpStatus.OK)) {
+
+            JSONObject jsonUser = (JSONObject) responseEntity.getBody();
 
             User user = new User((String) jsonUser.get("username"),
                     (String) jsonUser.get("password"),

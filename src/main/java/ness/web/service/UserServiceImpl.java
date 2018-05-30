@@ -1,6 +1,6 @@
-package ness.service;
+package ness.web.service;
 
-import ness.model.User;
+import ness.web.model.User;
 import org.apache.commons.lang3.text.StrSubstitutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
