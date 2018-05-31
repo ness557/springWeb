@@ -37,7 +37,7 @@ public class TokenServiceImpl implements TokenService {
         logger.info("Trying to get token by username = "
                 + username + " and password = " + password);
 
-        Map valuesMap = new HashMap();
+        Map<String, String> valuesMap = new HashMap<>();
 
         valuesMap.put("host", properties.getProperty("rest.hosturl"));
         valuesMap.put("username", username);
@@ -46,23 +46,21 @@ public class TokenServiceImpl implements TokenService {
         StrSubstitutor sub = new StrSubstitutor(valuesMap);
         String req = sub.replace(getToken);
 
-        ResponseEntity responseEntity= restTemplate.getForEntity(req, String.class);
+        ResponseEntity responseEntity = restTemplate.getForEntity(req, String.class);
 
-        if (responseEntity.getStatusCode().equals(HttpStatus.OK)){
+        if (responseEntity.getStatusCode().equals(HttpStatus.OK)) {
             logger.info("Got token");
             return (String) responseEntity.getBody();
-        }
-        else
+        } else
             logger.info("Error");
-
-        return null;
+        throw new AuthenticationException();
     }
 
     @Override
     public User getUser(String token) {
         logger.info("Trying to get user by token = " + token);
 
-        Map valuesMap = new HashMap();
+        Map<String, String> valuesMap = new HashMap();
 
         valuesMap.put("host", properties.getProperty("rest.hosturl"));
         valuesMap.put("token", token);
@@ -83,9 +81,9 @@ public class TokenServiceImpl implements TokenService {
 
             logger.info("Got user = " + user.toString());
             return user;
-        } else
-            logger.info("Error");
-
+        }
+        logger.info("Error");
         return null;
+
     }
 }
