@@ -60,7 +60,7 @@ public class TokenServiceImpl implements TokenService {
     public User getUser(String token) {
         logger.info("Trying to get user by token = " + token);
 
-        Map<String, String> valuesMap = new HashMap();
+        Map<String, String> valuesMap = new HashMap<>();
 
         valuesMap.put("host", properties.getProperty("rest.hosturl"));
         valuesMap.put("token", token);
